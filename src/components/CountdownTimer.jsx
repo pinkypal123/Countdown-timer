@@ -94,23 +94,18 @@ const CountdownTimer = () => {
             placeholder="HH"
             value={input.hours}
             onChange={handleInputChange}
-            // min="0"
           />
           <input
             name="minutes"
             placeholder="MM"
             value={input.minutes}
             onChange={handleInputChange}
-            // min="0"
-            // max="59"
           />
           <input
             name="seconds"
             placeholder="SS"
             value={input.seconds}
             onChange={handleInputChange}
-            // min="0"
-            // max="59"
           />
 
           <button onClick={setTimeFromInput} className="timer-button">
