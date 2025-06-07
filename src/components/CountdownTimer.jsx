@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 const CountdownTimer = () => {
   const [input, setInput] = useState({ hours: "", minutes: "", seconds: "" });
   const [remainingTime, setRemainingTime] = useState(0);
@@ -90,18 +89,22 @@ const CountdownTimer = () => {
       <div className="input-container">
         <div className="input-box">
           <input
+          type="number"
             name="hours"
             placeholder="HH"
             value={input.hours}
             onChange={handleInputChange}
+            
           />
           <input
+          type="number"
             name="minutes"
             placeholder="MM"
             value={input.minutes}
             onChange={handleInputChange}
           />
           <input
+          type="number"
             name="seconds"
             placeholder="SS"
             value={input.seconds}
