@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 const CountdownTimer = () => {
   const [input, setInput] = useState({ hours: "", minutes: "", seconds: "" });
   const [remainingTime, setRemainingTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [initialTime, setInitialTime] = useState(0);
-  const [endTime, setEndTime] = useState(null);
+   const [intervalId, setIntervalId] = useState(null);
   const [startButton, setStartButton] = useState("");
   const [quickSetButton, setQuickSetButton] = useState("");
   const handleInputChange = (e) => {
@@ -25,30 +25,43 @@ const CountdownTimer = () => {
   const startTimer = () => {
     setStartButton("start");
     if (remainingTime > 0 && !isRunning) {
-      const now = Date.now();
-      setEndTime(now + remainingTime * 1000);
       setIsRunning(true);
+      const id = setInterval(() => {
+        setRemainingTime((prev) => {
+          if (prev <= 1) {
+            clearInterval(id);
+            setIsRunning(false);
+             setStartButton("");
+  setQuickSetButton("");
+            alert("Time's up!");
+             
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      setIntervalId(id);
     }
   };
 
   const pauseTimer = () => {
     setStartButton("pause");
     setIsRunning(false);
-    setEndTime(null);
+    clearInterval(intervalId);
   };
 
   const resetTimer = () => {
     setStartButton("reset");
     setIsRunning(false);
+    clearInterval(intervalId);
     setRemainingTime(initialTime);
-    setEndTime(null);
   };
 
   const stopTimer = () => {
     setStartButton("stop");
     setIsRunning(false);
-    setRemainingTime(initialTime);
-    setEndTime(null);
+    clearInterval(intervalId);
+    setRemainingTime(0);
   };
 
   const formatTime = (seconds) => {
@@ -58,53 +71,30 @@ const CountdownTimer = () => {
     return `${hrs}:${mins}:${secs}`;
   };
 
-    const quickSet = (secs) => {
+  const quickSet = (secs) => {
     setRemainingTime(secs);
     setInitialTime(secs);
   };
-
-  // This useEffect runs when isRunning or endTime changes
-  useEffect(() => {
-    if (!isRunning || !endTime) return;
-
-    const interval = setInterval(() => {
-      const newTime = Math.round((endTime - Date.now()) / 1000);
-      if (newTime <= 0) {
-        clearInterval(interval);
-        setIsRunning(false);
-        setRemainingTime(0);
-        setStartButton("");
-        setQuickSetButton("");
-        alert("Time's up!");
-      } else {
-        setRemainingTime(newTime);
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [isRunning, endTime]);
-
   return (
     <>
       <div className="input-container">
         <div className="input-box">
           <input
-          type="number"
+            type="number"
             name="hours"
             placeholder="HH"
             value={input.hours}
             onChange={handleInputChange}
-            
           />
           <input
-          type="number"
+            type="number"
             name="minutes"
             placeholder="MM"
             value={input.minutes}
             onChange={handleInputChange}
           />
           <input
-          type="number"
+            type="number"
             name="seconds"
             placeholder="SS"
             value={input.seconds}
@@ -116,53 +106,23 @@ const CountdownTimer = () => {
           </button>
         </div>
       </div>
-
       <div className="d-flex flex-row column-gap-3">
-        <button
-          onClick={() => {
-            quickSet(60);
-            setQuickSetButton(60);
-          }}
-          className={`${
-            quickSetButton !== 60 ? "timer-button" : "activeButton"
-          }`}
-        >
-          1 Min
-        </button>
-        <button
-          onClick={() => {
-            quickSet(300);
-            setQuickSetButton(300);
-          }}
-          className={`${
-            quickSetButton !== 300 ? "timer-button" : "activeButton"
-          }`}
-        >
-          5 Min
-        </button>
-        <button
-          onClick={() => {
-            quickSet(600);
-            setQuickSetButton(600);
-          }}
-          className={`${
-            quickSetButton !== 600 ? "timer-button" : "activeButton"
-          }`}
-        >
-          10 Min
-        </button>
-        <button
-          onClick={() => {
-            quickSet(1800);
-            setQuickSetButton(1800);
-          }}
-          className={`${
-            quickSetButton !== 1800 ? "timer-button" : "activeButton"
-          }`}
-        >
-          30 Min
-        </button>
+        {[60, 300, 600, 1800].map((sec) => (
+          <button
+            key={sec}
+            onClick={() => {
+              quickSet(sec);
+              setQuickSetButton(sec);
+            }}
+            className={`${
+              quickSetButton !== sec ? "timer-button" : "activeButton"
+            }`}
+          >
+            {sec / 60} Min
+          </button>
+        ))}
       </div>
+
       <div className="show-contaienr">
         <p className="timer-box">{formatTime(remainingTime)}</p>
         <div className="action-box">
