@@ -1,10 +1,10 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 const CountdownTimer = () => {
   const [input, setInput] = useState({ hours: "", minutes: "", seconds: "" });
   const [remainingTime, setRemainingTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [initialTime, setInitialTime] = useState(0);
-   const [intervalId, setIntervalId] = useState(null);
+  const [intervalId, setIntervalId] = useState(null);
   const [startButton, setStartButton] = useState("");
   const [quickSetButton, setQuickSetButton] = useState("");
   const handleInputChange = (e) => {
@@ -31,10 +31,10 @@ const CountdownTimer = () => {
           if (prev <= 1) {
             clearInterval(id);
             setIsRunning(false);
-             setStartButton("");
-  setQuickSetButton("");
+            setStartButton("");
+            setQuickSetButton("");
             alert("Time's up!");
-             
+
             return 0;
           }
           return prev - 1;
